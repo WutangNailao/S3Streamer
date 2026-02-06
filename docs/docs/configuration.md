@@ -29,6 +29,7 @@ The following environment variables are required for the application to work:
 | `AWS_REGION`            | The AWS region where your S3 bucket is located.                               | X        |             |
 | `AWS_S3_BUCKET_NAME`    | The name of your S3 bucket.                                                   | X        |             |
 | `AWS_S3_ENDPOINT_URL`   | The endpoint URL for your S3-compatible storage solution.                     |          |             |
+| `AWS_S3_FORCE_PATH_STYLE` | Force path-style S3 URLs (useful for some S3-compatible storage).           |          | false       |
 | `PORT`                  | The port on which the server will run (default is 3000).                      |          | 3000        |
 | `NODE_ENV`              | The environment in which the application is running (development/production). |          | development |
 
@@ -37,5 +38,11 @@ The following environment variables are required for the application to work:
 The `AWS_S3_ENDPOINT_URL` environment variable is optional and is only required if you are using a non-AWS S3-compatible storage solution.
 
 Its default value is `https://s3.amazonaws.com`, which is the standard endpoint for AWS S3.
+
+:::
+
+:::info AWS_S3_FORCE_PATH_STYLE
+
+Set `AWS_S3_FORCE_PATH_STYLE=true` if your S3-compatible storage requires path-style URLs (for example some self-hosted or legacy endpoints).
 
 :::

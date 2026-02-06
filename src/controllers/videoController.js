@@ -13,10 +13,20 @@ const s3ClientOptions = {
   }
 };
 
+const parseBooleanEnv = (value) => {
+  if (!value) return false;
+  return ['1', 'true', 'yes', 'on'].includes(String(value).toLowerCase());
+};
+
 // Add endpoint URL if provided in environment variables
 if (process.env.AWS_S3_ENDPOINT_URL) {
   s3ClientOptions.endpoint = process.env.AWS_S3_ENDPOINT_URL;
   console.log(`Using custom S3 endpoint: ${process.env.AWS_S3_ENDPOINT_URL}`);
+}
+
+if (parseBooleanEnv(process.env.AWS_S3_FORCE_PATH_STYLE)) {
+  s3ClientOptions.forcePathStyle = true;
+  console.log('Using path-style S3 URLs');
 }
 
 const s3Client = new S3Client(s3ClientOptions);

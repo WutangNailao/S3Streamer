@@ -32,6 +32,7 @@ AWS_SECRET_ACCESS_KEY=your_secret_access_key
 AWS_REGION=your_aws_region
 AWS_S3_ENDPOINT_URL=https://s3.your_aws_region.amazonaws.com
 AWS_S3_BUCKET_NAME=your_bucket_name
+AWS_S3_FORCE_PATH_STYLE=false
 PORT=3000
 NODE_ENV=development
 ```
