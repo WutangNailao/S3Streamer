@@ -1,30 +1,38 @@
 # S3 Video Streaming Application
 
-A Node.js application for streaming video files hosted on AWS S3 directly in a web browser.
+A Rust + Solid application for listing and streaming video files from an S3 bucket using pre-signed URLs.
+
+## Structure
+
+- `backend/` Rust API server (Actix Web + AWS SDK)
+- `frontend/` Solid + Vite + Tailwind UI
+- Docker runs both in a single container (Rust serves static files)
 
 ## Features
 
 - Lists video files from a specified S3 bucket
-- Streams videos efficiently using pre-signed URLs
-- User-friendly web interface with video playback functionality
-- Responsive design that works on desktop and mobile devices
+- Streams videos using pre-signed URLs
+- Folder navigation, pagination, and full-screen playback
+- Responsive layout for desktop and mobile
 
 ## Prerequisites
 
-- Node.js v22+ (using nvs)
+- Rust toolchain (stable)
+- Node.js (for the frontend toolchain)
+- pnpm
 - AWS account with S3 bucket containing video files
-- AWS access key ID and secret access key with permissions to list and read objects from the S3 bucket
+- AWS access key ID and secret access key with permissions to list/read objects
 
 ## Setup
 
-1. Clone this repository
-2. Configure your environment variables:
+1. Clone this repository.
+2. Configure environment variables:
 
 ```bash
 cp .env.example .env
 ```
 
-Then edit the `.env` file with your AWS credentials and bucket information:
+Then edit `.env`:
 
 ```
 AWS_ACCESS_KEY_ID=your_access_key_id
@@ -34,50 +42,56 @@ AWS_S3_ENDPOINT_URL=https://s3.your_aws_region.amazonaws.com
 AWS_S3_BUCKET_NAME=your_bucket_name
 AWS_S3_FORCE_PATH_STYLE=false
 PORT=3000
-NODE_ENV=development
+STATIC_DIR=static
 ```
 
-3. Install dependencies:
+## Running the Backend
 
 ```bash
+cd backend
+cargo run
+```
+
+The API will listen on `http://localhost:3000` by default.
+
+## Running the Frontend (Dev)
+
+```bash
+cd frontend
 pnpm install
+pnpm dev
 ```
 
-## Running the Application
+The Vite dev server runs on `http://localhost:5173` and proxies `/api` to the backend.
 
-### Development Mode
+## Build Frontend (Static)
 
 ```bash
-pnpm run dev
+cd frontend
+pnpm build
 ```
 
-This will start the server with nodemon, which will automatically restart on file changes.
+The build output is in `frontend/dist`.
 
-### Production Mode
+## Running with Docker
 
 ```bash
-pnpm start
+docker build -t s3-streamer .
+docker run --rm -p 3000:3000 --env-file .env s3-streamer
 ```
 
-## Usage
-
-1. Open your browser and navigate to `http://localhost:3000` (or the port you specified in the .env file)
-2. You'll see a list of video files from your S3 bucket
-3. Click on any video to start streaming it in the browser
-4. Use the back button to return to the video list
+In Docker, the backend serves the frontend static files from `STATIC_DIR`.
 
 ## How It Works
 
-1. The server retrieves a list of video files from the specified S3 bucket
-2. When a user selects a video, the server generates a pre-signed URL for that specific file
-3. The browser is redirected to the pre-signed URL, allowing direct streaming from S3
-4. The pre-signed URL has a limited validity period for security (default: 1 hour)
+1. The backend lists objects in the S3 bucket and filters for video extensions.
+2. When a user selects a video, the backend generates a pre-signed URL.
+3. The frontend redirects the video player to the pre-signed URL, enabling direct streaming from S3.
 
-## Security Considerations
+## Security Notes
 
-- This application uses pre-signed URLs with a short expiration time
-- AWS credentials are stored in the .env file, which should never be committed to version control
-- CORS is enabled to allow streaming from S3 to your application
+- Keep `.env` out of version control.
+- Pre-signed URLs expire (default 1 hour) for security.
 
 ## License
 

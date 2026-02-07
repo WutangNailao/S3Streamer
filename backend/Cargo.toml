@@ -1,0 +1,28 @@
+[package]
+name = "s3-streamer-backend"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+actix-web = { version = "4", default-features = false, features = ["macros"] }
+actix-files = "0.6"
+aws-config = { version = "1", default-features = false, features = ["rt-tokio", "default-https-client"] }
+aws-sdk-s3 = { version = "1", default-features = false, features = ["http-1x", "rt-tokio", "rustls", "default-https-client"] }
+aws-credential-types = "1"
+aws-types = "1"
+serde = { version = "1", features = ["derive"] }
+dotenvy = "0.15"
+anyhow = "1"
+tracing-subscriber = { version = "0.3", default-features = false, features = ["fmt", "env-filter"] }
+urlencoding = "2"
+
+[profile.release]
+opt-level = "z"
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true
+debug = false
+debug-assertions = false
+overflow-checks = false
+incremental = false
